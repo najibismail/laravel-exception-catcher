@@ -1,0 +1,59 @@
+name: Update README and CHANGELOG Version
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  update-version:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Get version from tag
+        id: version
+        run: |
+          VERSION=${GITHUB_REF#refs/tags/v}
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Version: $VERSION"
+
+      - name: Update README version
+        run: |
+          sed -i "s/\*\*Current Version\*\*: [0-9.]\+/\*\*Current Version\*\*: ${{ steps.version.outputs.version }}/g" README.md
+
+      - name: Update CHANGELOG version
+        run: |
+          # Get current date in YYYY-MM-DD format
+          CURRENT_DATE=$(date +%Y-%m-%d)
+          
+          # Create temporary file with new changelog entry
+          cat > temp_changelog.md << EOF
+          ## [${{ steps.version.outputs.version }}] - $CURRENT_DATE
+          
+          ### Changed
+          - Version bump to ${{ steps.version.outputs.version }}
+          
+          EOF
+          
+          # Insert new entry after the header (line 7) and before first existing entry
+          head -n 7 CHANGELOG.md > new_changelog.md
+          cat temp_changelog.md >> new_changelog.md
+          tail -n +8 CHANGELOG.md >> new_changelog.md
+          mv new_changelog.md CHANGELOG.md
+          rm temp_changelog.md
+
+      - name: Commit and push changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add README.md CHANGELOG.md
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Update README and CHANGELOG version to ${{ steps.version.outputs.version }} [skip ci]"
+            git push origin HEAD:master
+          fi
