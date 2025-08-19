@@ -107,7 +107,7 @@ class ExceptionEmailer
     protected function sendExceptionEmail(Throwable $exception, ?Request $request = null): void
     {
         try {
-            $recipients = $this->config['recipients'] ?? [];
+            $recipients = $this->config['emails']['to'] ?? [];
             
             if (empty($recipients)) {
                 Log::warning('Exception Catcher: No recipients configured for exception emails');
@@ -116,28 +116,18 @@ class ExceptionEmailer
 
             $mailable = new ExceptionNotification($exception, $request, $this->config);
 
-            if ($this->config['queue_emails'] ?? false) {
+            if ($this->config['queue_enabled'] ?? false) {
                 Mail::to($recipients)
                     ->queue($mailable);
             } else {
                 Mail::to($recipients)
                     ->send($mailable);
             }
-
-        } catch (Throwable $emailException) {
+            
+        } catch (\Exception $e) {
             Log::error('Exception Catcher: Failed to send exception email', [
-                'original_exception' => [
-                    'class' => get_class($exception),
-                    'message' => $exception->getMessage(),
-                    'file' => $exception->getFile(),
-                    'line' => $exception->getLine(),
-                ],
-                'email_exception' => [
-                    'class' => get_class($emailException),
-                    'message' => $emailException->getMessage(),
-                    'file' => $emailException->getFile(),
-                    'line' => $emailException->getLine(),
-                ],
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
             ]);
         }
     }

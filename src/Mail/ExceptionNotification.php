@@ -5,6 +5,7 @@ namespace NajibIsmail\LaravelExceptionCatcher\Mail;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
+use Illuminate\Mail\Mailables\Address;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Http\Request;
 use Throwable;
@@ -43,7 +44,7 @@ class ExceptionNotification extends Mailable
         $this->config = $config;
         
         // Use ExceptionEmailer for consistent data formatting
-        $emailer = app()->make(\NajibIsmail\LaravelCatchException\ExceptionEmailer::class);
+        $emailer = app()->make(\NajibIsmail\LaravelExceptionCatcher\ExceptionEmailer::class);
         $this->exceptionData = $emailer->getExceptionData($exception, $request);
     }
 
@@ -52,11 +53,15 @@ class ExceptionNotification extends Mailable
      */
     public function envelope(): Envelope
     {
-        $subjectPrefix = $this->config['subject_prefix'] ?? '[Exception]';
+        $subjectPrefix = '[' . config('app.name') . ' Exception]';
         $exceptionClass = class_basename($this->exception);
+        
+        $fromEmail = $this->config['emails']['from'] ?? config('mail.from.address');
+        $fromName = $this->config['emails']['from_name'] ?? config('mail.from.name');
         
         return new Envelope(
             subject: $subjectPrefix . ' ' . $exceptionClass . ': ' . $this->exception->getMessage(),
+            from: new Address($fromEmail, $fromName),
         );
     }
 
