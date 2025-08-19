@@ -62,12 +62,14 @@ return [
     | Rate Limiting
     |--------------------------------------------------------------------------
     |
-    | Configure rate limiting to prevent email spam.
+    | Configure rate limiting to prevent email spam. Rate limiting is enabled
+    | by default to prevent overwhelming email inboxes during high exception
+    | periods.
     |
     */
     'rate_limiting' => [
-        'enabled' => true,
-        'max_emails_per_hour' => 10,
+        'enabled' => env('EXCEPTION_CATCHER_RATE_LIMITING_ENABLED', true),
+        'max_emails_per_hour' => env('EXCEPTION_CATCHER_MAX_EMAILS_PER_HOUR', 10),
         'cache_key_prefix' => 'exception_catcher_',
     ],
 

@@ -12,7 +12,7 @@ A powerful Laravel package that automatically catches exceptions and sends beaut
 - 🚨 **Automatic Exception Catching** - Seamlessly integrates with Laravel's exception handler
 - 📧 **Multiple Recipients** - Send alerts to multiple email addresses
 - 📱 **Responsive Email Design** - Beautiful emails that work on all devices and email clients
-- ⚡ **Rate Limiting** - Prevents email spam with intelligent throttling
+- ⚡ **Rate Limiting** - Prevents email spam with intelligent throttling (enabled by default)
 - 🔧 **Configurable Filtering** - Choose which exception types to report/skip
 - 📊 **Rich Information** - Includes request data, stack trace, user info, and environment details
 - ⚙️ **Queue Support** - Async email sending for better performance
@@ -76,8 +76,8 @@ return [
     'include_stack_trace' => env('EXCEPTION_CATCHER_INCLUDE_STACK_TRACE', true),
     
     'rate_limiting' => [
-        'enabled' => true,
-        'max_emails_per_hour' => 10,
+        'enabled' => env('EXCEPTION_CATCHER_RATE_LIMITING_ENABLED', true),
+        'max_emails_per_hour' => env('EXCEPTION_CATCHER_MAX_EMAILS_PER_HOUR', 10),
         'cache_key_prefix' => 'exception_catcher_',
     ],
     
@@ -105,6 +105,10 @@ EXCEPTION_CATCHER_FROM_NAME="Your App Name"
 EXCEPTION_CATCHER_QUEUE_ENABLED=false
 EXCEPTION_CATCHER_INCLUDE_STACK_TRACE=true
 EXCEPTION_CATCHER_INCLUDE_REQUEST=true
+
+# Rate Limiting Configuration
+EXCEPTION_CATCHER_RATE_LIMITING_ENABLED=true
+EXCEPTION_CATCHER_MAX_EMAILS_PER_HOUR=10
 
 # Laravel Mail Configuration  
 MAIL_MAILER=smtp
@@ -230,13 +234,14 @@ GET http://your-app.com/exception-test/runtime
 ### Rate Limiting Issues?
 - Check cache configuration in `config/cache.php`
 - Clear cache: `php artisan cache:clear`
-- Adjust rate limits in config file:
-  ```php
-  'rate_limiting' => [
-      'enabled' => true,
-      'max_emails_per_hour' => 10,  // Adjust this number
-      'cache_key_prefix' => 'exception_catcher_',
-  ],
+- Adjust rate limits in your `.env` file:
+  ```env
+  EXCEPTION_CATCHER_RATE_LIMITING_ENABLED=true
+  EXCEPTION_CATCHER_MAX_EMAILS_PER_HOUR=20  # Increase if needed
+  ```
+- Or disable rate limiting temporarily:
+  ```env
+  EXCEPTION_CATCHER_RATE_LIMITING_ENABLED=false
   ```
 
 ## 🏗️ Package Structure
