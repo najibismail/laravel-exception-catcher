@@ -105,10 +105,6 @@ EXCEPTION_CATCHER_FROM_NAME="Your App Name"
 EXCEPTION_CATCHER_QUEUE_ENABLED=false
 EXCEPTION_CATCHER_INCLUDE_STACK_TRACE=true
 EXCEPTION_CATCHER_INCLUDE_REQUEST=true
-EXCEPTION_CATCHER_FROM_EMAIL="noreply@yourapp.com"
-EXCEPTION_CATCHER_FROM_NAME="Your App Name"
-EXCEPTION_CATCHER_QUEUE_ENABLED=false
-EXCEPTION_CATCHER_INCLUDE_STACK_TRACE=true
 
 # Laravel Mail Configuration  
 MAIL_MAILER=smtp
@@ -119,22 +115,7 @@ MAIL_PASSWORD=your-password
 MAIL_ENCRYPTION=tls
 ```
 
-## 🔧 Manual Usage
-
-You can also send exception emails manually in your code:
-
-```php
-use NajibIsmail\LaravelExceptionCatcher\Facades\ExceptionCatcher;
-
-try {
-    // Your code here
-} catch (Exception $e) {
-    ExceptionCatcher::handle($e, request());
-    throw $e; // Re-throw if needed
-}
-```
-
-## 🔧 Alternative Integration Methods
+## 🔧 Integration Methods
 
 ### Method 1: Using the Trait (Recommended)
 
@@ -181,6 +162,21 @@ class Handler extends ExceptionHandler
             app('exception.emailer')->handle($exception, request());
         }
     }
+}
+```
+
+### Method 3: Using the Facade
+
+You can also send exception emails manually anywhere in your code:
+
+```php
+use NajibIsmail\LaravelExceptionCatcher\Facades\ExceptionCatcher;
+
+try {
+    // Your code here
+} catch (Exception $e) {
+    ExceptionCatcher::handle($e, request());
+    throw $e; // Re-throw if needed
 }
 ```
 
@@ -287,7 +283,7 @@ This package is open-sourced software licensed under the [MIT license](LICENSE).
 
 ## 🏷️ Version
 
-**Current Version**: 1.0.1  
+**Current Version**: 1.0.2  
 **Laravel Compatibility**: 8.x, 9.x, 10.x, 11.x  
 **PHP Compatibility**: 8.0+
 
