@@ -283,7 +283,7 @@ This package is open-sourced software licensed under the [MIT license](LICENSE).
 
 ## 🏷️ Version
 
-.0.3  
+**Current Version**: 1.0.5  
 **Laravel Compatibility**: 8.x, 9.x, 10.x, 11.x  
 **PHP Compatibility**: 8.0+
 
