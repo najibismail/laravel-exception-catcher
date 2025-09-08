@@ -1,0 +1,39 @@
+# Composer
+/vendor/
+composer.lock
+
+# IDE and Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Cache and temporary files
+*.tmp
+*.bak
+*.cache
+
+# Node.js (if ever used)
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# PHP
+.phpunit.result.cache
+phpunit.xml
+
+# Laravel specific
+storage/
+bootstrap/cache/
+.env
+.env.*
+!.env.example

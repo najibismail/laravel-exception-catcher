@@ -1,0 +1,42 @@
+{
+    "name": "najibismail/laravel-exception-catcher",
+    "type": "library",
+    "description": "A powerful Laravel package that automatically catches exceptions and sends beautifully formatted, responsive email notifications to multiple recipients",
+    "keywords": [
+        "laravel", "exception", "error", "email", "notification", "catch", "debug", "monitoring", "alert", "responsive"
+    ],
+    "homepage": "https://github.com/najibismail/laravel-exception-catcher",
+    "authors": [
+        {
+            "name": "Najib Ismail",
+            "email": "najibismail1986@gmail.com",
+            "homepage": "https://github.com/najibismail/laravel-exception-catcher"
+        }
+    ],
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "NajibIsmail\\LaravelExceptionCatcher\\": "src/"
+        }
+    },
+    "require": {
+        "php": "^8.0|^8.1|^8.2|^8.3",
+        "laravel/framework": "^8.0|^9.0|^10.0|^11.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.0|^10.0|^11.0",
+        "orchestra/testbench": "^6.0|^7.0|^8.0|^9.0"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0-dev"
+        },
+        "laravel": {
+            "providers": [
+                "NajibIsmail\\LaravelExceptionCatcher\\ExceptionCatcherServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
