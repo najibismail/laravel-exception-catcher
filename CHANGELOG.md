@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.0.8] - 2025-09-08
 
+### Changed
+- Version bump to 1.0.8
+
+## [1.0.8] - 2025-09-08
+
 ### Added
 - **Reportable Exceptions Configuration**: Added `reportable_exceptions` array for whitelist filtering
 - **Enhanced Enable/Disable Control**: Added proper `enabled` check in ExceptionEmailer
