@@ -41,17 +41,30 @@ The service provider will be automatically registered (Laravel 5.5+).
    EXCEPTION_CATCHER_FROM_EMAIL="noreply@yourapp.com"
    ```
 
-3. **Add to your Exception Handler** (`app/Exceptions/Handler.php`):
+3. **Register exception reporting for your Laravel version**:
+
+   For Laravel 8–10, add the trait to `app/Exceptions/Handler.php`:
    ```php
    use NajibIsmail\LaravelExceptionCatcher\Traits\SendsExceptionEmails;
    
    class Handler extends ExceptionHandler
    {
        use SendsExceptionEmails;
-       
-       // The trait automatically handles exception reporting
-       // No need to override the report() method
    }
+   ```
+
+   Laravel 11–13 use `bootstrap/app.php` instead. Add these imports at the top of the file:
+   ```php
+   use Illuminate\Foundation\Configuration\Exceptions;
+   use NajibIsmail\LaravelExceptionCatcher\ExceptionEmailer;
+   use Throwable;
+   ```
+
+   Add this registration inside the existing `withExceptions` callback (or create that callback if it is not present):
+   ```php
+   $exceptions->report(function (Throwable $exception): void {
+       app(ExceptionEmailer::class)->handle($exception, request());
+   });
    ```
 
 4. **Test it**:
@@ -159,9 +172,9 @@ MAIL_ENCRYPTION=tls
 
 ## 🔧 Integration Methods
 
-### Method 1: Using the Trait (Recommended)
+### Method 1: Using the Trait (Laravel 8–10)
 
-The trait automatically handles exception reporting. Simply add it to your Exception Handler:
+The trait automatically handles exception reporting. Add it to `app/Exceptions/Handler.php`:
 
 ```php
 <?php
@@ -175,13 +188,30 @@ use Throwable;
 class Handler extends ExceptionHandler
 {
     use SendsExceptionEmails;
-    
-    // The trait automatically overrides the report() method
-    // No additional code needed
 }
 ```
 
-### Method 2: Manual Integration
+### Method 2: Laravel 11–13
+
+Laravel 11 and later configure exception reporting in `bootstrap/app.php` rather than a generated `app/Exceptions/Handler.php`. Add these imports at the top of `bootstrap/app.php`:
+
+```php
+use Illuminate\Foundation\Configuration\Exceptions;
+use NajibIsmail\LaravelExceptionCatcher\ExceptionEmailer;
+use Throwable;
+```
+
+Add the registration inside the existing `withExceptions` closure:
+
+```php
+$exceptions->report(function (Throwable $exception): void {
+    app(ExceptionEmailer::class)->handle($exception, request());
+});
+```
+
+If your `bootstrap/app.php` already has a `withExceptions` closure, add the `$exceptions->report(...)` registration inside it rather than creating a second closure.
+
+### Method 3: Manual Integration (Laravel 8–10)
 
 If you prefer manual control, you can manually call the exception emailer:
 
@@ -207,7 +237,7 @@ class Handler extends ExceptionHandler
 }
 ```
 
-### Method 3: Using the Facade
+### Method 4: Using the Facade
 
 You can also send exception emails manually anywhere in your code:
 
@@ -327,10 +357,9 @@ This package is open-sourced software licensed under the [MIT license](LICENSE).
 ## 🏷️ Version
 
 **Current Version**: 1.0.8  
-**Laravel Compatibility**: 8.x, 9.x, 10.x, 11.x  
-**PHP Compatibility**: 8.0+
+**Laravel Compatibility**: 8.x through 13.x  
+**PHP Compatibility**: 8.0+ (Laravel 11 and 12 require PHP 8.2; Laravel 13 requires PHP 8.3)
 
 ---
 
 Made with ❤️ for the Laravel community
-
